@@ -1,0 +1,40 @@
+import { useEffect, useState } from "react";
+
+export const useFetch = (initialUrl, initialOptions = {}, autoFetch = true) => {
+  const [url, setUrl] = useState(initialUrl);
+  const [options, setOptions] = useState(initialOptions);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(autoFetch);
+  const [error, setError] = useState(null);
+
+  const fetchData = async (customUrl = url, customOptions = options) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(customUrl, customOptions);
+      if (!response.ok) throw new Error("Error en la petición");
+      const json = await response.json();
+      setData(json);
+      return json;
+    } catch (err) {
+      setError(err);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (autoFetch) {
+      fetchData();
+    }
+  }, [url, options, autoFetch]);
+
+  const refetch = (newUrl = url, newOptions = options) => {
+    setUrl(newUrl);
+    setOptions(newOptions);
+  };
+
+  return { data, loading, error, fetchData, refetch };
+};
