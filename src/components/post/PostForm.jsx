@@ -5,21 +5,20 @@ import Input from "../Input";
 import Select from "../Select";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
+import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
 
 const PostForm = () => {
   const { id } = useParams();
   const isEdit = !!id;
   const navigate = useNavigate();
 
-  const { data: areaData } = useFetch("http://localhost:8081/areas/search");
-  const { data: authorData } = useFetch("http://localhost:8081/users/search");
-  const { data: postTypeData } = useFetch(
-    "http://localhost:8081/post-types/search"
-  );
+  const { data: areaData } = useFetch(API_URLS_SEARCH.AREAS);
+  const { data: authorData } = useFetch(API_URLS_SEARCH.USERS);
+  const { data: postTypeData } = useFetch(API_URLS_SEARCH.POST_TYPES);
 
   const { fetchData: savePost } = useFetch("", {}, false);
   const { data: postData } = useFetch(
-    isEdit ? `http://localhost:8081/posts/${id}` : null
+    isEdit ? `${API_URLS.POSTS}/${id}` : null
   );
 
   const {
@@ -37,8 +36,14 @@ const PostForm = () => {
       if (postData.postDate) {
         const parts = postData.postDate.split("-");
         if (parts.length === 3) {
-          const year = parts[0].length === 2 ? `20${parts[0]}` : parts[0];
-          fixedDate = `${year}-${parts[1]}-${parts[2]}`;
+          const day = parts[0];
+          const month = parts[1];
+          const year = parts[2];
+
+          fixedDate = `${year}-${month.padStart(2, "0")}-${day.padStart(
+            2,
+            "0"
+          )}`;
         }
       }
 
@@ -53,7 +58,7 @@ const PostForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data)
+      console.log(data);
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("summary", data.subtitle);
@@ -62,14 +67,14 @@ const PostForm = () => {
       formData.append("authorId", data.authorId);
       formData.append("postTypeId", data.postTypeId);
 
-      if (data.image ) {
+      if (data.image) {
         console.log("Image file:", data.image);
         formData.append("image", data.image);
       }
 
       const url = isEdit
-        ? `http://localhost:8081/posts/${id}`
-        : "http://localhost:8081/posts";
+        ? `${API_URLS.POSTS}/${id}`
+        : API_URLS.POSTS;
       const method = isEdit ? "PUT" : "POST";
 
       await savePost(url, {

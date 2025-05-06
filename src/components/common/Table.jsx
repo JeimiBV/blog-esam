@@ -2,6 +2,58 @@ import React from "react";
 import Input from "../Input";
 
 const Table = ({ tableName, tableDescription, columns, data, addButton }) => {
+  const renderCellContent = (item, col, index) => {
+    if (col.type === "actions") {
+      return (
+        <td
+          key={col.key}
+          className="px-6 py-4 whitespace-nowrap flex gap-2"
+        >
+          {col.actions.map((action, i) => (
+            <span
+              key={i}
+              title={action.label}
+              onClick={() => action.onClick(item)}
+              className={`cursor-pointer hover:bg-gray-200 rounded-full p-2 ${action.className}`}
+            >
+              <action.icon size={20} />
+            </span>
+          ))}
+        </td>
+      );
+    }
+
+    if (col.type === "image" && col.key !== "") {
+      return (
+        <td key={col.key} className="px-6 py-4 whitespace-nowrap">
+          <img
+            src={
+              item[col.key]
+                ? `http://localhost:8081/uploads/${item[col.key]}`
+                : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+            }
+            alt="Imagen"
+            className="w-16 h-16 object-cover rounded-md"
+          />
+        </td>
+      );
+    }
+
+    if (col.key === "") {
+      return (
+        <td key={index} className="px-6 py-4 whitespace-nowrap">
+          {index + 1}
+        </td>
+      );
+    }
+
+    return (
+      <td key={col.key} className="px-6 py-4 whitespace-nowrap">
+        {item[col.key]}
+      </td>
+    );
+  };
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm bg-white">
       <div className="px-6 py-4 flex flex-col justify-between items-center bg-gray-50 border-b border-gray-200">
@@ -33,46 +85,7 @@ const Table = ({ tableName, tableDescription, columns, data, addButton }) => {
           <tbody className="divide-y divide-gray-100 text-gray-700 ">
             {data.map((item, index) => (
               <tr key={item.id || index} className="hover:bg-gray-50">
-                {columns.map((col, colIndex) => {
-                  if (col.type === "actions") {
-                    return (
-                      <td
-                        key={`${item.id || colIndex}-${col.key}`}
-                        className="px-6 py-4 whitespace-nowrap flex gap-2 "
-                      >
-                        {col.actions.map((action, i) => (
-                          <span
-                            key={i}
-                            title={action.label}
-                            onClick={() => action.onClick(item)}
-                            className={`cursor-pointer hover:bg-gray-200 rounded-full p-2 ${action.className}`}
-                          >
-                            <action.icon size={20} />
-                          </span>
-                        ))}
-                      </td>
-                    );
-                  }
-
-                  return (
-                    <td key={col.key} className="px-6 py-4 whitespace-nowrap">
-                      {col.type === "image" && col.key != "" ? (
-                        <img
-                          src={
-                            item[col.key] ||
-                            "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
-                          }
-                          alt="Imagen"
-                          className="w-16 h-16 object-cover rounded-md"
-                        />
-                      ) : col.key === "" ? (
-                        index + 1
-                      ) : (
-                        item[col.key]
-                      )}
-                    </td>
-                  );
-                })}
+                {columns.map((col) => renderCellContent(item, col, index))}
               </tr>
             ))}
           </tbody>

@@ -1,7 +1,9 @@
-import { Paperclip, PaperclipIcon } from "lucide-react";
+import { PaperclipIcon } from "lucide-react";
 import React from "react";
 import { useParams } from "react-router";
 import { useFetch } from "../../hooks/useFetch ";
+import SectionForm from "../section/SectionForm";
+import SectionManager from "../section/SectionManager";
 
 const PostView = () => {
   const { id } = useParams();
@@ -20,7 +22,11 @@ const PostView = () => {
   return (
     <div className="px-6 py-4">
       <img
-        src={postData.imageUrl ? postData.imageUrl : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"}
+        src={
+          postData.imageUrl
+            ? `http://localhost:8081/uploads/${postData.imageUrl}`
+            : "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg"
+        }
         alt={postData.title}
         className="w-full max-h-[400px] object-cover rounded-lg shadow"
       />
@@ -65,6 +71,8 @@ const PostView = () => {
               </div>
             </dd>
           </div>
+
+          <SectionManager postId={id} />
         </dl>
       </div>
     </div>

@@ -1,29 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useFetch } from "../../hooks/useFetch ";
-import Table from "../common/Table";
 import toast from "react-hot-toast";
-import { Eye, Pencil, Trash } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Pencil, Trash } from "lucide-react";
+import PostTypeForm from "./PostTypeForm";
 import Modal from "../Modal";
+import Table from "../common/Table";
+import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
 
-const PostTable = () => {
-  const navigate = useNavigate();
+const PostTypeTable = () => {
   const loadingToastId = useRef(null);
   const prevError = useRef(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedPostTypeId, setSelectedPostTypeId] = useState(null);
+  const [selectedPostType, setSelectedPostType] = useState(null);
 
   const {
-    data: posts,
+    data: areas,
     loading,
     error,
     fetchData,
-  } = useFetch("http://localhost:8081/posts/search");
+  } = useFetch(API_URLS_SEARCH.POST_TYPES);
 
   useEffect(() => {
     if (loading && !loadingToastId.current) {
-      loadingToastId.current = toast.loading("Cargando publicaciones...");
+      loadingToastId.current = toast.loading("Cargando áreas...");
     }
 
     if (!loading && loadingToastId.current) {
@@ -32,7 +34,7 @@ const PostTable = () => {
     }
 
     if (error && error !== prevError.current) {
-      toast.error("Error al cargar las publicaciones");
+      toast.error("Error al cargar las áreas");
       prevError.current = error;
     }
 
@@ -41,19 +43,21 @@ const PostTable = () => {
     }
   }, [loading, error]);
 
-  const handleEdit = (id) => {
-    navigate(`/posts/edit/${id}`);
+  const handleEdit = (postType) => {
+    console.log("Edit Area:", postType);
+    setSelectedPostType(postType);
+    setIsCreateModalOpen(true);
   };
 
-  const handleDelete = (id) => {
-    setSelectedPostId(id);
+  const handleDelete = async (id) => {
+    setSelectedPostTypeId(id);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/posts/${selectedPostId}`,
+        `${API_URLS.POST_TYPES}/${selectedPostTypeId}`,
         {
           method: "DELETE",
         }
@@ -67,43 +71,32 @@ const PostTable = () => {
 
       await fetchData();
     } catch (err) {
-      toast.error("Ocurrió un error al eliminar", err);
+      toast.error(err.message || "No se pudo eliminar la publicación");
     } finally {
       setIsModalOpen(false);
-      setSelectedPostId(null);
+      setSelectedPostTypeId(null);
     }
   };
 
   const columns = [
     { label: "N°", key: "" },
-    { label: "Título", key: "title" },
-    { label: "Imagen", key: "imageUrl", type: "image" },
-    { label: "Fecha de publicación", key: "postDate" },
-    { label: "Tipo de publicación", key: "postTypeName" },
-    { label: "Área", key: "areaName" },
-    { label: "Autor", key: "authorName" },
+    { label: "Nombre del tipo de publicación", key: "postTypeName" },
     {
       label: "Acciones",
       key: "actions",
       type: "actions",
       actions: [
         {
-          label: "Ver",
-          icon: Eye,
-          className: "text-green-500",
-          onClick: (post) => navigate(`/posts/${post.id}`),
-        },
-        {
           label: "Editar",
           icon: Pencil,
           className: "text-blue-900",
-          onClick: (post) => handleEdit(post.id),
+          onClick: (area) => handleEdit(area),
         },
         {
           label: "Eliminar",
           icon: Trash,
           className: "text-red-500",
-          onClick: (post) => handleDelete(post.id),
+          onClick: (area) => handleDelete(area.id),
         },
       ],
     },
@@ -112,27 +105,34 @@ const PostTable = () => {
   return (
     <>
       <Table
-        tableName="Publicaciones"
-        tableDescription="Lista de publicaciones"
+        tableName={"Tipos de publicación"}
+        tableDescription={"Lista de tipos de publicación"}
         columns={columns}
-        data={posts}
-        actionButtons
+        data={areas}
         addButton={
           <button
-            onClick={() => navigate("/posts/create")}
             className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200"
+            onClick={() => setIsCreateModalOpen(true)}
           >
-            Agregar Publicación
+            Agregar Tipo de Publicación
           </button>
         }
+      />
+
+      <PostTypeForm
+        isModalOpen={isCreateModalOpen}
+        setModalOpen={setIsCreateModalOpen}
+        selectedArea={selectedPostType}
+        fetchData={fetchData}
       />
 
       <Modal
         open={isModalOpen}
         setOpen={setIsModalOpen}
-        title="Eliminar publicación"
-        message="¿Seguro que deseas eliminar esta publicación? Esta acción no se puede deshacer."
+        title="Eliminar tipo de publicación"
+        message="¿Seguro que deseas eliminar este tipo de publicación? Esta acción no se puede deshacer."
         confirmText="Eliminar"
+        confirmClassName="bg-red-600 text-white hover:bg-red-500"
         cancelText="Cancelar"
         onConfirm={confirmDelete}
         icon={<Trash className="w-8 h-8 text-red-600" />}
@@ -141,4 +141,4 @@ const PostTable = () => {
   );
 };
 
-export default PostTable;
+export default PostTypeTable;

@@ -10,6 +10,10 @@ import PostForm from "./components/post/PostForm";
 import PostTable from "./components/post/PostTable";
 import PostPage from "./pages/PostPage";
 import PostView from "./components/post/PostView";
+import AreaTable from "./components/area/AreaTable";
+import AreaForm from "./components/area/AreaForm";
+import PostTypeForm from "./components/postType/PostTypeForm";
+import PostTypeTable from "./components/postType/PostTypeTable";
 
 function App() {
   return (
@@ -29,10 +33,21 @@ function App() {
           <Route path="edit/:id" element={<PostForm />} />
           <Route path=":id" element={<PostView />} />
         </Route>
-        <Route path="/areas" element={<AreaPage />} />
+
+        <Route path="/areas" element={<AreaPage />}>
+          <Route index element={<AreaTable />} />
+          <Route path="create" element={<AreaForm />} />
+          <Route path="edit/:id" element={<AreaForm />} />
+        </Route>
+
+        <Route path="/post-types" element={<PostTypePage />}>
+          <Route index element={<PostTypeTable />} />
+          <Route path="create" element={<PostTypeForm />} />
+          <Route path="edit/:id" element={<PostTypeForm />} />
+        </Route>
+
         <Route path="/users" element={<UserPage />} />
         <Route path="/roles" element={<RolePage />} />
-        <Route path="/post-types" element={<PostTypePage />} />
       </Routes>
       <div>
         <Toaster />

@@ -11,7 +11,7 @@ const Input = ({
   errors,
   type = "text",
   as = "input",
-  rows = 4,
+  rows = 6,
   ...rest
 }) => {
   const baseClass =
