@@ -123,6 +123,7 @@ const AreaTable = () => {
         isModalOpen={isCreateModalOpen}
         setModalOpen={setIsCreateModalOpen}
         selectedArea={selectedArea}
+        setSelectedArea={setSelectedArea}
         fetchData={fetchData}
       />
 

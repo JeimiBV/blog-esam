@@ -1,13 +1,30 @@
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Underline from "@tiptap/extension-underline";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import { Bold, Italic, Underline, UnderlineIcon } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  ListIcon,
+  ListOrderedIcon,
+  UnderlineIcon,
+} from "lucide-react";
 import React from "react";
 
 const TipTapEditor = ({ content = "", onChange }) => {
   const buttonBase = "p-2 rounded hover:bg-gray-200 transition";
 
   const editor = useEditor({
-    extensions: [StarterKit, Underline],
+    extensions: [
+      StarterKit.configure({
+        bulletList: false,
+        orderedList: false,
+      }),
+      Underline,
+      BulletList,
+      OrderedList,
+    ],
     content,
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
@@ -34,8 +51,19 @@ const TipTapEditor = ({ content = "", onChange }) => {
       isActive: editor.isActive("underline"),
       onClick: () => editor.chain().focus().toggleUnderline().run(),
     },
+    {
+      name: "bulletList",
+      icon: <ListIcon size={18} />,
+      isActive: editor.isActive("bulletList"),
+      onClick: () => editor.chain().focus().toggleBulletList().run(),
+    },
+    {
+      name: "orderedList",
+      icon: <ListOrderedIcon size={18} />,
+      isActive: editor.isActive("orderedList"),
+      onClick: () => editor.chain().focus().toggleOrderedList().run(),
+    },
   ];
-
 
   return (
     <div className="space-y-2">
@@ -55,11 +83,12 @@ const TipTapEditor = ({ content = "", onChange }) => {
       <EditorContent
         editor={editor}
         className={`
-          w-full max-w-3xl min-h-[200px]
-          p-4 rounded-md bg-white
-          border border-gray-300
-          focus:outline-none focus:ring-2 focus:ring-indigo-600
+          w-full min-h-[200px]
+          p-4 bg-red-50
+          list-disc
+          list-inside
         `}
+        height={200}
       />
     </div>
   );

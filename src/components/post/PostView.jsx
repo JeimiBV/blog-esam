@@ -31,11 +31,11 @@ const PostView = () => {
         className="w-full max-h-[400px] object-cover rounded-lg shadow"
       />
 
-      <div className="px-4 mt-2">
+      <div className="space-y-2 mt-2">
         <h1 className="text-3xl font-semibold text-gray-800">
           {postData?.title}
         </h1>
-        <p className="mt-1 max-w-2xl text-sm/6 text-gray-500">
+        <p className="mt-1 text-sm/6 text-gray-500">
           {postData?.subtitle}
         </p>
       </div>

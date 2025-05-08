@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import Modal from "../Modal";
 import Input from "../Input";
 import toast from "react-hot-toast";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Edit2Icon, PlusCircleIcon } from "lucide-react";
 
-const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea }) => {
+const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea, setSelectedArea }) => {
   const {
     register,
     handleSubmit,
@@ -16,7 +16,7 @@ const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea }) => {
   useEffect(() => {
     if (selectedArea) {
       reset({
-        areaName: selectedArea.areaName,
+        name: selectedArea.areaName,
       });
     } else {
       reset();
@@ -40,11 +40,10 @@ const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea }) => {
       });
 
       if (!response.ok) {
-        throw new Error(
-          selectedArea
-            ? "Error al actualizar el área"
-            : "Error al crear el área"
-        );
+        const errorData = await response.json();
+        errorData.map((error) => toast.error(error.message));
+        reset();
+        return;
       }
 
       reset();
@@ -60,13 +59,25 @@ const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea }) => {
     }
   };
 
+  const handleClose = () => {
+    setModalOpen(false);
+    setSelectedArea(null);
+    reset();
+  }
+
+  const handleCancel = () => {
+    setModalOpen(false);
+    setSelectedArea(null);
+    reset();
+  }
+
   return (
     <Modal
       open={isModalOpen}
       setOpen={setModalOpen}
       title={selectedArea ? "Editar Área" : "Crear Área"}
       confirmText="Guardar"
-      confirmClassName="bg-blue-600 text-white hover:bg-blue-500"
+      confirmClassName={selectedArea ? "bg-blue-600 text-white hover:bg-blue-500" : "bg-green-600 text-white hover:bg-green-500"}
       cancelText="Cancelar"
       cancelClassName="bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
       icon={
@@ -78,13 +89,13 @@ const AreaForm = ({ isModalOpen, setModalOpen, fetchData, selectedArea }) => {
       }
       iconColor={selectedArea ? "text-blue-600" : "text-green-600"}
       iconColorBackground={selectedArea ? "bg-blue-100" : "bg-green-100"}
-      onConfirm={() => handleSubmit(onSubmit)()}
-      onCancel={() => setModalOpen(false)}
+      onConfirm={handleClose}
+      onCancel={handleCancel}
     >
       <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
           <Input
-            name="areaName"
+            name="name"
             label="Nombre del área"
             placeholder="Escribe el nombre del área..."
             register={register}
