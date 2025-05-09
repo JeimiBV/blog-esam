@@ -64,7 +64,7 @@ const SectionForm = ({ postId, refetch }) => {
       />
 
       {showForm && (
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 bg-gray-50">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 border border-gray-300 p-4">
           <SectionInputFields
             type={sectionType}
             register={register}

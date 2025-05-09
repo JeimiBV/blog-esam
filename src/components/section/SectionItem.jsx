@@ -68,7 +68,7 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
       case "Texto":
         return (
           <div
-            className="prose"
+            className="prose prose-sm"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
           
