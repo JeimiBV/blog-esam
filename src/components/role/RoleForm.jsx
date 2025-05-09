@@ -1,16 +1,16 @@
-import { Edit2Icon, PlusCircleIcon } from "lucide-react";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Modal from "../Modal";
+import { Edit2Icon, PlusCircleIcon } from "lucide-react";
 import Input from "../Input";
-import { API_URLS } from "../../constants/urls";
 
-const PostTypeForm = ({
+const RoleForm = ({
   isModalOpen,
   setModalOpen,
   fetchData,
-  selectedPostType: selectedPostType,
+  selectedRole,
+  setSelectedRole,
 }) => {
   const {
     register,
@@ -20,22 +20,22 @@ const PostTypeForm = ({
   } = useForm();
 
   useEffect(() => {
-    if (selectedPostType) {
+    if (selectedRole) {
       reset({
-        name: selectedPostType.postTypeName,
+        name: selectedRole.roleName,
       });
     } else {
       reset();
     }
-  }, [selectedPostType, reset]);
+  }, [selectedRole, reset]);
 
   const onSubmit = async (data) => {
     try {
-      const url = selectedPostType
-        ? `${API_URLS.POST_TYPES}/${selectedPostType.id}`
-        : API_URLS.POST_TYPES;
+      const url = selectedRole
+        ? `http://localhost:8081/roles/${selectedRole.id}`
+        : "http://localhost:8081/roles";
 
-      const method = selectedPostType ? "PUT" : "POST";
+      const method = selectedRole ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
@@ -46,23 +46,23 @@ const PostTypeForm = ({
       });
 
       if (!response.ok) {
-        throw new Error(
-          selectedPostType
-            ? "Error al actualizar el tipo de publicación"
-            : "Error al crear el tipo de publicación"
-        );
+        const errorData = await response.json();
+        errorData.map((error) => toast.error(error.message));
+        reset();
+        return;
       }
 
       reset();
       fetchData();
       setModalOpen(false);
+      setSelectedRole(null);
       toast.success(
-        selectedPostType
-          ? "Tipo de publicación actualizada exitosamente"
-          : "Tipo de publicación creada exitosamente"
+        selectedRole
+          ? "Rol actualizada exitosamente"
+          : "Rol creada exitosamente"
       );
     } catch (error) {
-      toast.error(error.message || "Error al guardar el tipo de publicación");
+      toast.error(error.message);
     }
   };
 
@@ -70,28 +70,20 @@ const PostTypeForm = ({
     <Modal
       open={isModalOpen}
       setOpen={setModalOpen}
-      title={
-        selectedPostType
-          ? "Editar tipo de publicación"
-          : "Crear tipo de publicación"
-      }
+      title={selectedRole ? "Editar Rol" : "Crear Rol"}
       confirmText="Guardar"
-      confirmClassName={
-        selectedPostType
-          ? "bg-blue-600 hover:bg-blue-700 text-white"
-          : "bg-green-600 hover:bg-green-700 text-white"
-      }
+      confirmClassName={selectedRole ? "bg-blue-600 text-white hover:bg-blue-500" : "bg-green-600 text-white hover:bg-green-500"}
       cancelText="Cancelar"
       cancelClassName="bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
       icon={
-        selectedPostType ? (
+        selectedRole ? (
           <Edit2Icon className="w-8 h-8 text-blue-600" />
         ) : (
           <PlusCircleIcon className="w-8 h-8 text-green-600" />
         )
       }
-      iconColor={selectedPostType ? "text-blue-600" : "text-green-600"}
-      iconColorBackground={selectedPostType ? "bg-blue-100" : "bg-green-100"}
+      iconColor={selectedRole ? "text-blue-600" : "text-green-600"}
+      iconColorBackground={selectedRole ? "bg-blue-100" : "bg-green-100"}
       onConfirm={() => handleSubmit(onSubmit)()}
       onCancel={() => setModalOpen(false)}
     >
@@ -99,8 +91,8 @@ const PostTypeForm = ({
         <div>
           <Input
             name="name"
-            label="Nombre del tipo de publicación"
-            placeholder="Escribe el nombre del tipo de publicación..."
+            label="Nombre del rol"
+            placeholder="Escribe el nombre del rol..."
             register={register}
             required="Este campo es obligatorio"
             errors={errors}
@@ -111,4 +103,4 @@ const PostTypeForm = ({
   );
 };
 
-export default PostTypeForm;
+export default RoleForm;

@@ -11,9 +11,12 @@ const SectionEditor = ({ sectionData, fetchData }) => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`${API_URLS.SECTIONS}/${sectionToDelete.id}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `${API_URLS.SECTIONS}/${sectionToDelete.id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Error al eliminar la sección");
 
@@ -28,7 +31,7 @@ const SectionEditor = ({ sectionData, fetchData }) => {
   };
 
   return (
-    <div className="space-y-4 mt-6 rounded shadow-sm divide-y divide-gray-100">
+    <div className="mt-6 divide-y divide-gray-100 w-full">
       {sectionData?.map((section) => (
         <SectionItem
           key={section.id}

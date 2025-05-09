@@ -21,9 +21,9 @@ const SectionInputFields = ({ type, register, setValue, errors }) => {
   }
 
   return (
-    <div>
+    <div className="w-full">
       {sectionTypeName === "texto" ? (
-        <div>
+        <div className="w-full">
           <label className="text-sm font-semibold mb-2 block">Contenido</label>
           <TipTapEditor
             onChange={(html) =>

@@ -14,6 +14,8 @@ import AreaTable from "./components/area/AreaTable";
 import AreaForm from "./components/area/AreaForm";
 import PostTypeForm from "./components/postType/PostTypeForm";
 import PostTypeTable from "./components/postType/PostTypeTable";
+import RoleTable from "./components/role/RoleTable";
+import RoleForm from "./components/role/RoleForm";
 
 function App() {
   return (
@@ -44,6 +46,12 @@ function App() {
           <Route index element={<PostTypeTable />} />
           <Route path="create" element={<PostTypeForm />} />
           <Route path="edit/:id" element={<PostTypeForm />} />
+        </Route>
+
+        <Route path="/roles" element={<RolePage />}>
+          <Route index element={<RoleTable />} />
+          <Route path="create" element={<RoleForm />} />
+          <Route path="edit/:id" element={<RoleForm />} />
         </Route>
 
         <Route path="/users" element={<UserPage />} />

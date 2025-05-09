@@ -2,30 +2,29 @@ import React, { useEffect, useRef, useState } from "react";
 import { useFetch } from "../../hooks/useFetch ";
 import toast from "react-hot-toast";
 import { Pencil, Trash } from "lucide-react";
-import PostTypeForm from "./PostTypeForm";
-import Modal from "../Modal";
 import Table from "../common/Table";
-import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
+import Modal from "../Modal";
+import RoleForm from "./RoleForm";
 
-const PostTypeTable = () => {
+const RoleTable = () => {
   const loadingToastId = useRef(null);
   const prevError = useRef(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedPostTypeId, setSelectedPostTypeId] = useState(null);
-  const [selectedPostType, setSelectedPostType] = useState(null);
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const {
     data: areas,
     loading,
     error,
     fetchData,
-  } = useFetch(API_URLS_SEARCH.POST_TYPES);
+  } = useFetch("http://localhost:8081/roles/search");
 
   useEffect(() => {
     if (loading && !loadingToastId.current) {
-      loadingToastId.current = toast.loading("Cargando áreas...");
+      loadingToastId.current = toast.loading("Cargando roles...");
     }
 
     if (!loading && loadingToastId.current) {
@@ -34,7 +33,7 @@ const PostTypeTable = () => {
     }
 
     if (error && error !== prevError.current) {
-      toast.error("Error al cargar las áreas");
+      toast.error("Error al cargar las roles");
       prevError.current = error;
     }
 
@@ -43,21 +42,20 @@ const PostTypeTable = () => {
     }
   }, [loading, error]);
 
-  const handleEdit = (postType) => {
-    console.log("Edit Area:", postType);
-    setSelectedPostType(postType);
+  const handleEdit = (area) => {
+    setSelectedRole(area);
     setIsCreateModalOpen(true);
   };
 
   const handleDelete = async (id) => {
-    setSelectedPostTypeId(id);
+    setSelectedRoleId(id);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `${API_URLS.POST_TYPES}/${selectedPostTypeId}`,
+        `http://localhost:8081/roles/${selectedRoleId}`,
         {
           method: "DELETE",
         }
@@ -67,20 +65,20 @@ const PostTypeTable = () => {
         throw new Error("Error al eliminar la publicación");
       }
 
-      toast.success("Publicación eliminada correctamente");
+      toast.success("Rol eliminado correctamente");
 
       await fetchData();
     } catch (err) {
-      toast.error(err.message || "No se pudo eliminar la publicación");
+      toast.error("Ocurrió un error al eliminar", err);
     } finally {
       setIsModalOpen(false);
-      setSelectedPostTypeId(null);
+      setSelectedRoleId(null);
     }
   };
 
   const columns = [
     { label: "N°", key: "" },
-    { label: "Nombre del tipo de publicación", key: "postTypeName" },
+    { label: "Nombre del rol", key: "roleName" },
     {
       label: "Acciones",
       key: "actions",
@@ -105,32 +103,35 @@ const PostTypeTable = () => {
   return (
     <>
       <Table
-        tableName={"Tipos de publicación"}
-        tableDescription={"Lista de tipos de publicación"}
+        tableName={"Roles"}
+        tableDescription={"Lista de roles"}
         columns={columns}
         data={areas}
         addButton={
           <button
             className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-200"
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={() => {
+              setIsCreateModalOpen(true);
+            }}
           >
-            Agregar Tipo de Publicación
+            Agregar Rol
           </button>
         }
       />
 
-      <PostTypeForm
+      <RoleForm
         isModalOpen={isCreateModalOpen}
         setModalOpen={setIsCreateModalOpen}
-        selectedPostType={selectedPostType}
+        selectedRole={selectedRole}
+        setSelectedRole={setSelectedRole}
         fetchData={fetchData}
       />
 
       <Modal
         open={isModalOpen}
         setOpen={setIsModalOpen}
-        title="Eliminar tipo de publicación"
-        message="¿Seguro que deseas eliminar este tipo de publicación? Esta acción no se puede deshacer."
+        title="Eliminar rol"
+        message="¿Seguro que deseas eliminar este rol? Esta acción no se puede deshacer."
         confirmText="Eliminar"
         confirmClassName="bg-red-600 text-white hover:bg-red-500"
         cancelText="Cancelar"
@@ -141,4 +142,4 @@ const PostTypeTable = () => {
   );
 };
 
-export default PostTypeTable;
+export default RoleTable;
