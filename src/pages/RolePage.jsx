@@ -1,61 +1,16 @@
 import React from "react";
 import Header from "../components/common/Header";
-import { useFetch } from "../hooks/useFetch ";
-import { Pencil, Trash } from "lucide-react";
-import Table from "../components/common/Table";
+import { Outlet } from "react-router";
 
 const RolePage = () => {
-  const {
-    data: users,
-    loading,
-    error,
-    //refetch,
-  } = useFetch("http://localhost:8081/roles/search");
-
-  const columns = [
-    { label: "N°", key: "" },
-    { label: "Nombre del rol", key: "roleName" },
-    {
-      label: "Acciones",
-      type: "actions",
-      actions: [
-        {
-          label: "Editar",
-          icon: Pencil,
-          onClick: (row) => console.log("Edit", row),
-          className: "hover:text-blue-800",
-        },
-        {
-          label: "Eliminar",
-          icon: Trash,
-          onClick: (row) => console.log("Delete", row),
-          className: "hover:text-red-800",
-        },
-      ],
-    },
-  ];
   return (
     <div className="flex-1 overflow-auto relative z-10">
-      {loading && <p>Cargando...</p>}
-      {error && <p className="text-red-500">Error: {error.message}</p>}
-
-      <Header title={"Áreas"} />
-
-      {!loading && !error && (
-        <div className="min-h-screen px-4 py-6 bg-white">
-          <Table
-            tableName={"Roles"}
-            tableDescription={"Lista de roles"}
-            columns={columns}
-            data={users}
-            addButton={
-              <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200">
-                Agregar Rol
-              </button>
-            }
-          />
+      <Header title={"Roles"} />
+      <div className="min-h-screen px-4 py-6 bg-white">
+        <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm bg-white h-full m-6">
+          <Outlet />
         </div>
-      )}
+      </div>
     </div>
   );
 };
