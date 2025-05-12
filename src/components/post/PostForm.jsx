@@ -66,6 +66,7 @@ const PostForm = () => {
       formData.append("areaId", data.areaId);
       formData.append("authorId", data.authorId);
       formData.append("postTypeId", data.postTypeId);
+      console.log ("FormData:", formData);
 
       if (data.image) {
         console.log("Image file:", data.image);
