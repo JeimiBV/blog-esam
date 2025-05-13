@@ -25,9 +25,16 @@ const RoleForm = ({
         name: selectedRole.roleName,
       });
     } else {
-      reset();
+      reset({
+        name: "",
+      });
     }
   }, [selectedRole, reset]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedRole(null);
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -58,8 +65,8 @@ const RoleForm = ({
       setSelectedRole(null);
       toast.success(
         selectedRole
-          ? "Rol actualizada exitosamente"
-          : "Rol creada exitosamente"
+          ? "Rol actualizado exitosamente"
+          : "Rol creado exitosamente"
       );
     } catch (error) {
       toast.error(error.message);
@@ -72,7 +79,11 @@ const RoleForm = ({
       setOpen={setModalOpen}
       title={selectedRole ? "Editar Rol" : "Crear Rol"}
       confirmText="Guardar"
-      confirmClassName={selectedRole ? "bg-blue-600 text-white hover:bg-blue-500" : "bg-green-600 text-white hover:bg-green-500"}
+      confirmClassName={
+        selectedRole
+          ? "bg-blue-600 text-white hover:bg-blue-500"
+          : "bg-green-600 text-white hover:bg-green-500"
+      }
       cancelText="Cancelar"
       cancelClassName="bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
       icon={
@@ -85,19 +96,18 @@ const RoleForm = ({
       iconColor={selectedRole ? "text-blue-600" : "text-green-600"}
       iconColorBackground={selectedRole ? "bg-blue-100" : "bg-green-100"}
       onConfirm={() => handleSubmit(onSubmit)()}
-      onCancel={() => setModalOpen(false)}
+      onCancel={() => closeModal()}
+      onClose={() => closeModal()}
     >
       <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <Input
-            name="name"
-            label="Nombre del rol"
-            placeholder="Escribe el nombre del rol..."
-            register={register}
-            required="Este campo es obligatorio"
-            errors={errors}
-          />
-        </div>
+        <Input
+          name="name"
+          label="Nombre del rol"
+          placeholder="Escribe el nombre del rol..."
+          register={register}
+          required="Este campo es obligatorio"
+          errors={errors}
+        />
       </form>
     </Modal>
   );

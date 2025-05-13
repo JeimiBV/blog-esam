@@ -10,7 +10,8 @@ const PostTypeForm = ({
   isModalOpen,
   setModalOpen,
   fetchData,
-  selectedPostType: selectedPostType,
+  selectedPostType,
+  setSelectedPostType,
 }) => {
   const {
     register,
@@ -22,12 +23,19 @@ const PostTypeForm = ({
   useEffect(() => {
     if (selectedPostType) {
       reset({
-        name: selectedPostType.postTypeName,
+        name: selectedPostType.roleName,
       });
     } else {
-      reset();
+      reset({
+        name: "",
+      });
     }
   }, [selectedPostType, reset]);
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setSelectedPostType(null);
+  };
 
   const onSubmit = async (data) => {
     try {
@@ -58,8 +66,8 @@ const PostTypeForm = ({
       setModalOpen(false);
       toast.success(
         selectedPostType
-          ? "Tipo de publicación actualizada exitosamente"
-          : "Tipo de publicación creada exitosamente"
+          ? "Tipo de publicación actualizado exitosamente"
+          : "Tipo de publicación creado exitosamente"
       );
     } catch (error) {
       toast.error(error.message || "Error al guardar el tipo de publicación");
@@ -93,7 +101,8 @@ const PostTypeForm = ({
       iconColor={selectedPostType ? "text-blue-600" : "text-green-600"}
       iconColorBackground={selectedPostType ? "bg-blue-100" : "bg-green-100"}
       onConfirm={() => handleSubmit(onSubmit)()}
-      onCancel={() => setModalOpen(false)}
+      onCancel={() => closeModal()}
+      onClose={() => closeModal()}
     >
       <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
         <div>
