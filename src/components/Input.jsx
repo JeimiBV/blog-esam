@@ -4,8 +4,7 @@ const Input = ({
   name,
   label,
   placeholder,
-  register,
-  setValue,
+  register = () => {},
   required,
   value,
   errors,
@@ -18,14 +17,10 @@ const Input = ({
     "block grow p-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm resize-none";
 
   const borderClass = `
-      flex items-start rounded-md bg-white ${
-        type == "file" ? "pl-0" : "pl-3"
-      } outline-1 -outline-offset-1 outline-gray-300
-      has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600
-      ${errors?.[name] ? "outline-red-500" : ""}
-    `;
-
-  const isFile = type === "file";
+    flex items-start rounded-md bg-white pl-3 outline-1 -outline-offset-1 outline-gray-300
+    has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600
+    ${errors?.[name] ? "outline-red-500" : ""}
+  `;
 
   return (
     <div>
@@ -49,29 +44,6 @@ const Input = ({
               className={baseClass}
               {...rest}
             />
-          ) : as === "input" && isFile ? (
-            <input
-              id={name}
-              name={name}
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                setValue(name, e.target.files[0]);
-              }}
-              className="block w-full text-base text-gray-900 file:py-2 file:px-4
-    file:border-0 file:text-sm file:font-semibold
-    file:bg-indigo-50 file:text-gray-700 hover:file:bg-indigo-100"
-            />
-          ) : as === "input" && register ? (
-            <input
-              id={name}
-              type={type}
-              value={value}
-              placeholder={placeholder}
-              {...register(name, { required })}
-              className={baseClass}
-              {...rest}
-            />
           ) : (
             <input
               id={name}
@@ -79,6 +51,7 @@ const Input = ({
               type={type}
               value={value}
               placeholder={placeholder}
+              {...register(name, { required })}
               className={baseClass}
               {...rest}
             />

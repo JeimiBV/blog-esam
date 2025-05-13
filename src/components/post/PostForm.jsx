@@ -6,6 +6,7 @@ import Select from "../Select";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
+import FileDropzone from "../ui/FileDropzone";
 
 const PostForm = () => {
   const { id } = useParams();
@@ -58,7 +59,6 @@ const PostForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("summary", data.subtitle);
@@ -66,16 +66,12 @@ const PostForm = () => {
       formData.append("areaId", data.areaId);
       formData.append("authorId", data.authorId);
       formData.append("postTypeId", data.postTypeId);
-      console.log ("FormData:", formData);
 
       if (data.image) {
-        console.log("Image file:", data.image);
         formData.append("image", data.image);
       }
 
-      const url = isEdit
-        ? `${API_URLS.POSTS}/${id}`
-        : API_URLS.POSTS;
+      const url = isEdit ? `${API_URLS.POSTS}/${id}` : API_URLS.POSTS;
       const method = isEdit ? "PUT" : "POST";
 
       await savePost(url, {
@@ -108,23 +104,31 @@ const PostForm = () => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 space-y-4">
+        <Input
+          name="title"
+          label="Título"
+          placeholder="Escribe un título..."
+          register={register}
+          required="Este campo es obligatorio"
+          errors={errors}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            name="title"
-            label="Título"
-            placeholder="Escribe un título..."
+            name="subtitle"
+            label="Resumen"
+            placeholder="Escribe un breve resumen..."
             register={register}
             required="Este campo es obligatorio"
             errors={errors}
+            as="textarea"
+            rows={5}
           />
-
-          <Input
+          <FileDropzone
             name="image"
-            label="Imagen"
-            placeholder="Selecciona una imagen..."
-            type="file"
-            setValue={setValue}
+            label="Imagen de la publicación"
             register={register}
+            setValue={setValue}
+            required="La imagen es obligatoria"
             errors={errors}
           />
 
@@ -170,17 +174,6 @@ const PostForm = () => {
             errors={errors}
           />
         </div>
-
-        <Input
-          name="subtitle"
-          label="Resumen"
-          placeholder="Escribe un breve resumen..."
-          register={register}
-          required="Este campo es obligatorio"
-          errors={errors}
-          as="textarea"
-          rows={6}
-        />
 
         <div className="flex gap-6 justify-end mt-4">
           <button

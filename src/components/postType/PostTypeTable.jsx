@@ -123,6 +123,7 @@ const PostTypeTable = () => {
         isModalOpen={isCreateModalOpen}
         setModalOpen={setIsCreateModalOpen}
         selectedPostType={selectedPostType}
+        setSelectedPostType={setSelectedPostType}
         fetchData={fetchData}
       />
 

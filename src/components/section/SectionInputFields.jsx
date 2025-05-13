@@ -1,6 +1,7 @@
 import React from "react";
 import Input from "../Input";
 import TipTapEditor from "../TipTapEditor";
+import FileDropzone from "../ui/FileDropzone";
 
 const SectionInputFields = ({ type, register, setValue, errors }) => {
   if (!type) return null;
@@ -9,12 +10,11 @@ const SectionInputFields = ({ type, register, setValue, errors }) => {
 
   if (sectionTypeName === "imagen") {
     return (
-      <Input
+      <FileDropzone
         name="image"
-        label="Imagen"
-        type="file"
-        setValue={setValue}
+        label="Imagen de la publicación"
         register={register}
+        setValue={setValue}
         errors={errors}
       />
     );
