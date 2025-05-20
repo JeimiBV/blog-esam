@@ -36,7 +36,7 @@ const PostView = () => {
           {postData?.title}
         </h1>
         <p className="mt-1 text-sm/6 text-gray-500">
-          {postData?.subtitle}
+          {postData?.summary}
         </p>
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFetch } from "../../hooks/useFetch ";
 import Input from "../Input";
@@ -7,8 +7,11 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
 import FileDropzone from "../ui/FileDropzone";
+import { Trash } from "lucide-react";
 
 const PostForm = () => {
+  const [imagePreview, setImagePreview] = useState(null);
+
   const { id } = useParams();
   const isEdit = !!id;
   const navigate = useNavigate();
@@ -28,6 +31,7 @@ const PostForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm();
 
   useEffect(() => {
@@ -48,6 +52,10 @@ const PostForm = () => {
         }
       }
 
+      setImagePreview(
+        postData.imageUrl ? `${API_URLS.UPLOADS}/${postData.imageUrl}` : null
+      );
+
       const fixedData = {
         ...postData,
         postDate: fixedDate,
@@ -61,13 +69,13 @@ const PostForm = () => {
     try {
       const formData = new FormData();
       formData.append("title", data.title);
-      formData.append("summary", data.subtitle);
+      formData.append("summary", data.summary);
       formData.append("postDate", data.postDate);
       formData.append("areaId", data.areaId);
       formData.append("authorId", data.authorId);
       formData.append("postTypeId", data.postTypeId);
 
-      if (data.image) {
+      if (data.image instanceof File) {
         formData.append("image", data.image);
       }
 
@@ -94,6 +102,11 @@ const PostForm = () => {
     isEdit ? "editar" : "crear"
   } una publicación`;
 
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setValue("image", null);
+  };
+
   return (
     <>
       <div className="px-6 py-4 flex justify-between items-center bg-gray-50 border-b border-gray-200">
@@ -114,23 +127,52 @@ const PostForm = () => {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            name="subtitle"
+            name="summary"
             label="Resumen"
             placeholder="Escribe un breve resumen..."
             register={register}
+            watch={watch}
             required="Este campo es obligatorio"
             errors={errors}
             as="textarea"
             rows={5}
           />
-          <FileDropzone
-            name="image"
-            label="Imagen de la publicación"
-            register={register}
-            setValue={setValue}
-            required="La imagen es obligatoria"
-            errors={errors}
-          />
+          {imagePreview ? (
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-gray-800">
+                Imagen seleccionada:
+              </p>
+              <div className="flex items-center gap-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                <img
+                  src={imagePreview}
+                  alt="Vista previa"
+                  className="w-[130px] h-auto rounded-md border border-gray-300 object-cover"
+                />
+                <div className="flex flex-col justify-between h-full">
+                  <p className="text-sm text-gray-600 break-all max-w-xs">
+                    {postData.imageUrl}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="mt-2 inline-flex items-center gap-1 text-sm text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    <Trash className="w-4 h-4" />
+                    Eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <FileDropzone
+              name="image"
+              label="Imagen de la publicación"
+              register={register}
+              setValue={setValue}
+              required="La imagen es obligatoria"
+              errors={errors}
+            />
+          )}
 
           <Input
             name="postDate"

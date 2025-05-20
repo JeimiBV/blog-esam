@@ -12,7 +12,6 @@ const RoleTable = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
 
   const {
@@ -47,15 +46,15 @@ const RoleTable = () => {
     setIsCreateModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    setSelectedRoleId(id);
+  const handleDelete = async (role) => {
+    setSelectedRole(role);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/roles/${selectedRoleId}`,
+        `http://localhost:8081/roles/${selectedRole?.id}`,
         {
           method: "DELETE",
         }
@@ -72,7 +71,7 @@ const RoleTable = () => {
       toast.error("Ocurrió un error al eliminar", err);
     } finally {
       setIsModalOpen(false);
-      setSelectedRoleId(null);
+      setSelectedRole(null);
     }
   };
 
