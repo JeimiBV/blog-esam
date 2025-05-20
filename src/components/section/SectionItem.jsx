@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import TipTapEditor from "../TipTapEditor";
 import Input from "../Input";
 import { Pencil, Save, Trash2, X } from "lucide-react";
+import FileDropzone from "../ui/FileDropzone";
 
 const SectionItem = ({ section, fetchData, onStartDelete }) => {
   const { register, reset, setValue, getValues } = useForm();
@@ -39,9 +40,9 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
   const renderEditMode = () => {
     if (section.sectionTypeName === "Imagen") {
       return (
-        <Input
+        <FileDropzone
           name="image"
-          type="file"
+          label="Imagen de la publicación"
           register={register}
           setValue={setValue}
         />
@@ -71,7 +72,6 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
             className="prose prose-sm"
             dangerouslySetInnerHTML={{ __html: section.content }}
           />
-          
         );
       case "Imagen":
         return (
@@ -91,7 +91,7 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
   };
 
   return (
-    <div className="p-2 mt-4 bg-white rounded flex justify-between items-start gap-4 hover:bg-gray-100">
+    <div className="p-2 mt-4 bg-white rounded flex justify-between items-start hover:bg-gray-100">
       <div className="flex-1 space-y-2">
         {isEditing ? renderEditMode() : renderContent()}
       </div>

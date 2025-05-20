@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Input from "../Input";
 import TipTapEditor from "../TipTapEditor";
+import FileDropzone from "../ui/FileDropzone";
 import { Facebook, Instagram, Twitter } from "lucide-react";
 
 const SectionInputFields = ({ type, register, setValue, errors, postId }) => {
@@ -78,18 +79,19 @@ const SectionInputFields = ({ type, register, setValue, errors, postId }) => {
     setValue("video", url, { shouldValidate: true });
   };
 
+
+
   if (!type) return null;
 
   const sectionTypeName = type.sectionTypeName.toLowerCase();
 
   if (sectionTypeName === "imagen") {
     return (
-      <Input
+      <FileDropzone
         name="image"
-        label="Imagen"
-        type="file"
-        setValue={setValue}
+        label="Imagen de la publicación"
         register={register}
+        setValue={setValue}
         errors={errors}
       />
     );

@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
 import { Facebook, Instagram, Twitter, Link2, Edit, Trash } from "lucide-react";
+import FileDropzone from "../ui/FileDropzone";
+
 const PostForm = () => {
   const { id } = useParams();
   const isEdit = !!id;
@@ -129,7 +131,6 @@ const PostForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data);
       const formData = new FormData();
       formData.append("title", data.title);
       formData.append("summary", data.subtitle);
@@ -175,23 +176,31 @@ const PostForm = () => {
       </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="px-6 py-4 space-y-4">
+        <Input
+          name="title"
+          label="Título"
+          placeholder="Escribe un título..."
+          register={register}
+          required="Este campo es obligatorio"
+          errors={errors}
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            name="title"
-            label="Título"
-            placeholder="Escribe un título..."
+            name="subtitle"
+            label="Resumen"
+            placeholder="Escribe un breve resumen..."
             register={register}
             required="Este campo es obligatorio"
             errors={errors}
+            as="textarea"
+            rows={5}
           />
-
-          <Input
+          <FileDropzone
             name="image"
-            label="Imagen"
-            placeholder="Selecciona una imagen..."
-            type="file"
-            setValue={setValue}
+            label="Imagen de la publicación"
             register={register}
+            setValue={setValue}
+            required="La imagen es obligatoria"
             errors={errors}
           />
 
