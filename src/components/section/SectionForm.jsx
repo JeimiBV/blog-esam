@@ -18,15 +18,13 @@ const SectionForm = ({ postId, refetch }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
-    console.log("Contenido HTML enviado:", data.content);
-
     const formData = new FormData();
     formData.append("content", data.content);
     formData.append("position", data.position || "1");
     formData.append("sectionTypeId", sectionType.id);
     formData.append("postId", postId);
 
-    if (data.image) {
+    if (data.image instanceof File) {
       formData.append("image", data.image);
     }
 
@@ -36,12 +34,16 @@ const SectionForm = ({ postId, refetch }) => {
         body: formData,
       });
 
-      if (!response.ok) throw new Error("Error al guardar la sección");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Ocurrió un error");
+      }
 
       await refetch();
       toast.success("Sección creada correctamente");
       resetForm();
     } catch (error) {
+      console.error("Error:", error.message);
       toast.error(error.message || "No se pudo guardar la sección");
     }
   };
@@ -64,7 +66,10 @@ const SectionForm = ({ postId, refetch }) => {
       />
 
       {showForm && (
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-4 border border-gray-300 p-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-4 border border-gray-300 p-4"
+        >
           <SectionInputFields
             type={sectionType}
             register={register}

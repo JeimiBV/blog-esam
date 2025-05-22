@@ -1,8 +1,6 @@
 import { PaperclipIcon, Facebook, Instagram, Twitter, Link2 } from "lucide-react";
-import React from "react";
 import { useParams } from "react-router";
 import { useFetch } from "../../hooks/useFetch ";
-import SectionForm from "../section/SectionForm";
 import SectionManager from "../section/SectionManager";
 
 const PostView = () => {
@@ -66,7 +64,7 @@ const PostView = () => {
           {postData?.title || "Título del post"}
         </h1>
         <p className="mt-1 text-sm/6 text-gray-500">
-          {postData?.subtitle || "Subtítulo del post"}
+          {postData?.summary}
         </p>
       </div>
 

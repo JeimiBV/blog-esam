@@ -1,16 +1,30 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { API_URLS } from "../../constants/urls";
 import toast from "react-hot-toast";
 import TipTapEditor from "../TipTapEditor";
 import Input from "../Input";
-import { Pencil, Save, Trash2, X } from "lucide-react";
+import { Pencil, Save, Trash, Trash2, X } from "lucide-react";
 import FileDropzone from "../ui/FileDropzone";
 
 const SectionItem = ({ section, fetchData, onStartDelete }) => {
-  const { register, reset, setValue, getValues } = useForm();
+  const { register, reset, setValue, getValues, errors } = useForm();
   const [isEditing, setIsEditing] = useState(false);
   const [editContent, setEditContent] = useState(section.content);
+  const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if (section.sectionTypeName === "Imagen") {
+      setImagePreview(
+        section.content ? `${API_URLS.UPLOADS}/${section.content}` : null
+      );
+    }
+  }, [section]);
+
+  const handleRemoveImage = () => {
+    setImagePreview(null);
+    setValue("image", null);
+  };
 
   const handleSave = async () => {
     try {
@@ -40,12 +54,42 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
   const renderEditMode = () => {
     if (section.sectionTypeName === "Imagen") {
       return (
-        <FileDropzone
-          name="image"
-          label="Imagen de la publicación"
-          register={register}
-          setValue={setValue}
-        />
+        (imagePreview && (
+          <div className="space-y-2">
+            <p className="text-sm font-semibold text-gray-800">
+              Imagen seleccionada:
+            </p>
+            <div className="flex items-center gap-4 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+              <img
+                src={imagePreview}
+                alt="Vista previa"
+                className="w-[130px] h-auto rounded-md border border-gray-300 object-cover"
+              />
+              <div className="flex flex-col justify-between h-full">
+                <p className="text-sm text-gray-600 break-all max-w-xs">
+                  {section.imageUrl}
+                </p>
+                <button
+                  type="button"
+                  onClick={handleRemoveImage}
+                  className="mt-2 inline-flex items-center gap-1 text-sm text-red-600 hover:text-red-700 transition-colors"
+                >
+                  <Trash className="w-4 h-4" />
+                  Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        )) || (
+          <FileDropzone
+            name="image"
+            label="Imagen de la publicación"
+            register={register}
+            setValue={setValue}
+            required="La imagen es obligatoria"
+            errors={errors}
+          />
+        )
       );
     }
     if (section.sectionTypeName === "Texto") {
@@ -91,7 +135,7 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
   };
 
   return (
-    <div className="p-2 mt-4 bg-white rounded flex justify-between items-start hover:bg-gray-100">
+    <div className="p-2 mt-4 bg-white rounded flex justify-between items-start hover:bg-gray-100 space-x-3">
       <div className="flex-1 space-y-2">
         {isEditing ? renderEditMode() : renderContent()}
       </div>

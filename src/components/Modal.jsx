@@ -8,6 +8,7 @@ const Modal = ({
   message = "Esta acción no se puede deshacer.",
   onConfirm,
   onCancel,
+  onClose,
   confirmText = "Confirmar",
   confirmClassName = "bg-blue-600 text-white hover:bg-blue-500",
   cancelText = "Cancelar",
@@ -15,21 +16,23 @@ const Modal = ({
   icon,
   iconColorBackground = "bg-blue-100",
   children,
-  onClose
 }) => {
   if (!open) return null;
 
   const handleCancel = () => {
     setOpen(false);
-    if (onClose) onClose();
-    if (onCancel) onCancel();
+    onClose?.();
+    onCancel?.();
   };
 
-  const handleConfirm = () => {
-    if (onConfirm) onConfirm();
-    if (onClose) onClose();
-    setOpen(false);
+  const handleConfirm = async () => {
+    const result = await onConfirm?.();
+    if (result === false) return;
   };
+
+  const defaultIcon = (
+    <MessageCircleWarning className="w-8 h-8 text-blue-600" />
+  );
 
   return (
     <div
@@ -48,8 +51,10 @@ const Modal = ({
         </button>
 
         <div className="p-6 flex items-start gap-4">
-          <div className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full ${iconColorBackground}`}>
-            {icon || <MessageCircleWarning className="w-8 h-8 text-blue-600"  />}
+          <div
+            className={`flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full ${iconColorBackground}`}
+          >
+            {icon || defaultIcon}
           </div>
           <div className="w-full">
             {children ? (
@@ -66,7 +71,7 @@ const Modal = ({
         <div className="bg-gray-50 px-6 py-4 flex justify-end gap-2">
           <button
             onClick={handleConfirm}
-            className={`px-4 py-2 rounded text-white ${confirmClassName}`}
+            className={`px-4 py-2 rounded ${confirmClassName}`}
           >
             {confirmText}
           </button>
