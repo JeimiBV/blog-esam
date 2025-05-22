@@ -1,5 +1,4 @@
-import { CaseUpper, Image, Text, Airplay, Youtube } from "lucide-react";
-import React from "react";
+import { CaseUpper, Image, Text, Youtube, AirplayIcon } from "lucide-react";
 import { useFetch } from "../../hooks/useFetch ";
 import { API_URLS_SEARCH } from "../../constants/urls";
 
@@ -27,8 +26,8 @@ const SectionTypeButtons = ({ selected, onSelect }) => {
             {type.sectionTypeName === "Título" && <CaseUpper size={15} />}
             {type.sectionTypeName === "Texto" && <Text size={15} />} 
             {type.sectionTypeName === "Imagen" && <Image size={15} />}
-             {type.sectionTypeName === "RRSS" && <Airplay size={15} />}
-              {type.sectionTypeName === "Video" && <Youtube size={15} />}
+            {type.sectionTypeName === "RRSS" && <AirplayIcon size={15} />}
+            {type.sectionTypeName === "Video" && <Youtube size={15} />}
             <span className="text-sm font-medium">{type.sectionTypeName}</span>
           </button>
         );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useFetch } from "../../hooks/useFetch ";
 import Input from "../Input";
@@ -6,37 +6,21 @@ import Select from "../Select";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router";
 import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
-import { Facebook, Instagram, Twitter, Link2, Edit, Trash } from "lucide-react";
+import { Link2, Edit, Trash, Facebook, Instagram, Twitter } from "lucide-react";
 import FileDropzone from "../ui/FileDropzone";
 
 const PostForm = () => {
+  const { data: socialMediaOptions } = useFetch(API_URLS.SOCIAL_NETWORKS);
+
+  const [socialMedia, setSocialMedia] = useState([]);
+
   const { id } = useParams();
   const isEdit = !!id;
   const navigate = useNavigate();
 
-  const [socialMedia, setSocialMedia] = useState([
-    {
-      platform: "Facebook",
-      url: "https://facebook.com/ejemplo",
-    },
-    {
-      platform: "Instagram",
-      url: "https://instagram.com/ejemplo",
-    },
-    {
-      platform: "Twitter",
-      url: "https://twitter.com/ejemplo",
-    },
-  ]);
   const [editingIndex, setEditingIndex] = useState(-1);
   const [newPlatform, setNewPlatform] = useState("");
   const [newUrl, setNewUrl] = useState("");
-
-  const socialMediaOptions = [
-    { name: "Facebook", placeholder: "https://facebook.com/tu-pagina" },
-    { name: "Instagram", placeholder: "https://instagram.com/tu-usuario" },
-    { name: "Twitter", placeholder: "https://twitter.com/tu-perfil" },
-  ];
 
   const { data: areaData } = useFetch(API_URLS_SEARCH.AREAS);
   const { data: authorData } = useFetch(API_URLS_SEARCH.USERS);
@@ -80,15 +64,6 @@ const PostForm = () => {
       reset(fixedData);
     }
   }, [isEdit, postData, reset]);
-
-  // Handlers para redes sociales
-  const handleAddSocial = () => {
-    if (newPlatform && newUrl) {
-      setSocialMedia([...socialMedia, { platform: newPlatform, url: newUrl }]);
-      setNewPlatform("");
-      setNewUrl("");
-    }
-  };
 
   const handleEditSocial = (index) => {
     setEditingIndex(index);
@@ -186,7 +161,7 @@ const PostForm = () => {
         />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
-            name="subtitle"
+            name="summary"
             label="Resumen"
             placeholder="Escribe un breve resumen..."
             register={register}
@@ -246,17 +221,6 @@ const PostForm = () => {
             errors={errors}
           />
         </div>
-
-        <Input
-          name="subtitle"
-          label="Resumen"
-          placeholder="Escribe un breve resumen..."
-          register={register}
-          required="Este campo es obligatorio"
-          errors={errors}
-          as="textarea"
-          rows={6}
-        />
 
         <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
           <dt className="text-sm/6 font-medium text-gray-900">

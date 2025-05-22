@@ -4,10 +4,11 @@ import { useParams } from "react-router";
 import { useFetch } from "../../hooks/useFetch ";
 import SectionForm from "../section/SectionForm";
 import SectionManager from "../section/SectionManager";
+import { API_URLS } from "../../constants/urls";
 
 const PostView = () => {
   const { id } = useParams();
-  const { data: postData, loading, error } = useFetch(`http://localhost:8081/posts/${id}`);
+  const { data: postData, loading, error } = useFetch(`${API_URLS.POSTS}/${id}`);
 
   const getSocialLinks = () => {
     const savedLinks = localStorage.getItem(`socialLinks-${id}`);

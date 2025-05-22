@@ -1,4 +1,3 @@
-import React from "react";
 import SectionForm from "./SectionForm";
 import { useFetch } from "../../hooks/useFetch ";
 import { API_URLS_SEARCH } from "../../constants/urls";

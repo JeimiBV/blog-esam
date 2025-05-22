@@ -8,6 +8,8 @@ export const API_URLS = {
   AREAS: `${BASE_URL}/areas`,
   USERS: `${BASE_URL}/users`,
   UPLOADS: `${BASE_URL}/uploads`,
+  SOCIAL_NETWORKS: `${BASE_URL}/social-networks`,
+  POST_SOCIAL_NETWORKS: `${BASE_URL}/post-social-network`,
 };
 export const API_URLS_SEARCH = {
   AREAS: `${BASE_URL}/areas/search`,
@@ -16,4 +18,6 @@ export const API_URLS_SEARCH = {
   SECTIONS: `${BASE_URL}/sections/search`,
   POSTS: `${BASE_URL}/posts/search`,
   SECTION_TYPES: `${BASE_URL}/section-types/search`,
+  SOCIAL_NETWORKS: `${BASE_URL}/social-network/search`,
+  POST_SOCIAL_NETWORKS: `${BASE_URL}/post-social-network/search?postId=`,
 };

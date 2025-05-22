@@ -21,7 +21,7 @@ import Modal from "./Modal";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
 
-const TipTapEditor = ({ content = "", onChange }) => {
+const TipTapEditor = ({ content = "", onChange, error }) => {
   const [showLinkModal, setShowLinkModal] = React.useState(false);
   const [url, setUrl] = React.useState("");
   const buttonBase = "p-2 rounded hover:bg-gray-200 transition";
@@ -130,6 +130,8 @@ const TipTapEditor = ({ content = "", onChange }) => {
         className="w-full min-h-[200px] px-4 prose-xs"
         rows={5}
       />
+      {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
+
       <Modal
         open={showLinkModal}
         setOpen={setShowLinkModal}

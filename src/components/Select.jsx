@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Select = ({
   options,
@@ -10,8 +10,17 @@ const Select = ({
   register,
   required,
   errors,
+  onChange: externalOnChange,
 }) => {
   const [selected, setSelected] = useState([0]);
+
+  const handleChange = (e) => {
+    const selectedItem = options.find((p) => String(p.id) === e.target.value);
+    setSelected(selectedItem);
+    if (externalOnChange) {
+      externalOnChange(e, selectedItem);
+    }
+  };
 
   return (
     <div>
@@ -33,10 +42,7 @@ const Select = ({
             validate: (value) =>
               value !== "0" || "Selecciona una opción válida",
           })}
-          onChange={(e) => {
-            const selectedItem = options.find((p) => p.id === e.target.value);
-            setSelected(selectedItem);
-          }}
+          onChange={handleChange}
         >
           <option value="0" disabled hidden>
             -- {placeholder || `Selecciona el ${name}`} --
