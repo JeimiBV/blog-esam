@@ -13,7 +13,6 @@ const PostTypeTable = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedPostTypeId, setSelectedPostTypeId] = useState(null);
   const [selectedPostType, setSelectedPostType] = useState(null);
 
   const {
@@ -49,15 +48,15 @@ const PostTypeTable = () => {
     setIsCreateModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    setSelectedPostTypeId(id);
+  const handleDelete = async (postType) => {
+    setSelectedPostType(postType);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `${API_URLS.POST_TYPES}/${selectedPostTypeId}`,
+        `${API_URLS.POST_TYPES}/${selectedPostType?.id}`,
         {
           method: "DELETE",
         }
@@ -74,7 +73,7 @@ const PostTypeTable = () => {
       toast.error(err.message || "No se pudo eliminar la publicación");
     } finally {
       setIsModalOpen(false);
-      setSelectedPostTypeId(null);
+      setSelectedPostType(null);
     }
   };
 

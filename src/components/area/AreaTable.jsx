@@ -12,7 +12,6 @@ const AreaTable = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [selectedAreaId, setSelectedAreaId] = useState(null);
   const [selectedArea, setSelectedArea] = useState(null);
 
 
@@ -44,20 +43,19 @@ const AreaTable = () => {
   }, [loading, error]);
 
   const handleEdit = (area) => {
-    console.log("Edit Area:", area);
     setSelectedArea(area);
     setIsCreateModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    setSelectedAreaId(id);
+  const handleDelete = async (area) => {
+    setSelectedArea(area);
     setIsModalOpen(true);
   };
 
   const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8081/areas/${selectedAreaId}`,
+        `http://localhost:8081/areas/${selectedArea?.id}`,
         {
           method: "DELETE",
         }
@@ -74,7 +72,7 @@ const AreaTable = () => {
       toast.error("Ocurrió un error al eliminar", err);
     } finally {
       setIsModalOpen(false);
-      setSelectedAreaId(null);
+      setSelectedArea(null);
     }
   };
 
@@ -96,7 +94,7 @@ const AreaTable = () => {
           label: "Eliminar",
           icon: Trash,
           className: "text-red-500",
-          onClick: (area) => handleDelete(area.id),
+          onClick: (area) => handleDelete(area),
         },
       ],
     },

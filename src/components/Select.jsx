@@ -11,6 +11,7 @@ const Select = ({
   required,
   errors,
   onChange: externalOnChange,
+  className,
 }) => {
   const [selected, setSelected] = useState([0]);
 
@@ -23,7 +24,7 @@ const Select = ({
   };
 
   return (
-    <div>
+    <div className={`w-full ${className}`}>
       <label htmlFor={name} className="block text-sm font-medium text-gray-900">
         {label || placeholder}
       </label>
@@ -37,11 +38,13 @@ const Select = ({
     ${errors?.[name] ? "outline-red-500" : ""}
   `}
           defaultValue="0"
-          {...register(name, {
-            required: required && "Este campo es obligatorio",
-            validate: (value) =>
-              value !== "0" || "Selecciona una opción válida",
-          })}
+          {...(typeof register === "function"
+            ? register(name, {
+                required: required && "Este campo es obligatorio",
+                validate: (value) =>
+                  value !== "0" || "Selecciona una opción válida",
+              })
+            : {})}
           onChange={handleChange}
         >
           <option value="0" disabled hidden>

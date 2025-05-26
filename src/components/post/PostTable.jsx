@@ -135,6 +135,7 @@ const PostTable = () => {
         confirmText="Eliminar"
         cancelText="Cancelar"
         onConfirm={confirmDelete}
+        confirmClassName="bg-red-600 text-white hover:bg-red-500"
         icon={<Trash className="w-8 h-8 text-red-600" />}
       />
     </>

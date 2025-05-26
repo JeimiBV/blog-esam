@@ -1,4 +1,3 @@
-import React from "react";
 
 const Input = ({
   name,
@@ -6,13 +5,18 @@ const Input = ({
   placeholder,
   register = () => {},
   required,
+  watch = () => {},
   value,
   errors,
   type = "text",
   as = "input",
   rows = 6,
+  maxLength = 500,
+  className = "",
   ...rest
 }) => {
+  const currentValue = watch(name) || "";
+
   const baseClass =
     "block grow p-2 text-base text-gray-900 placeholder:text-gray-400 focus:outline-none sm:text-sm resize-none";
 
@@ -23,7 +27,7 @@ const Input = ({
   `;
 
   return (
-    <div>
+    <div className={`${className}`}>
       {label && (
         <label
           htmlFor={name}
@@ -39,7 +43,8 @@ const Input = ({
               rows={rows}
               id={name}
               placeholder={placeholder}
-              value={value}
+              maxLength={maxLength}
+              defaultValue={value}
               {...register(name, { required })}
               className={baseClass}
               {...rest}
@@ -57,6 +62,11 @@ const Input = ({
             />
           )}
         </div>
+        {as === "textarea" && (
+          <div className="mt-1 text-right text-sm text-gray-500">
+            {currentValue.length}/{maxLength} caracteres
+          </div>
+        )}
         {errors?.[name] && (
           <p className="text-red-500 text-sm mt-1">{errors[name].message}</p>
         )}

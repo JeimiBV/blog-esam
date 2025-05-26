@@ -76,13 +76,13 @@ const AreaForm = ({
       setOpen={setModalOpen}
       title={selectedArea ? "Editar Área" : "Crear Área"}
       confirmText="Guardar"
+      cancelText="Cancelar"
+      cancelClassName="bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
       confirmClassName={
         selectedArea
           ? "bg-blue-600 text-white hover:bg-blue-500"
           : "bg-green-600 text-white hover:bg-green-500"
       }
-      cancelText="Cancelar"
-      cancelClassName="bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
       icon={
         selectedArea ? (
           <Edit2Icon className="w-8 h-8 text-blue-600" />
@@ -92,10 +92,10 @@ const AreaForm = ({
       }
       iconColor={selectedArea ? "text-blue-600" : "text-green-600"}
       iconColorBackground={selectedArea ? "bg-blue-100" : "bg-green-100"}
-      onConfirm={closeModal}
       onCancel={closeModal}
+      onConfirm={handleSubmit(onSubmit)}
     >
-      <form className="space-y-4 p-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-4 p-4">
         <div>
           <Input
             name="name"
