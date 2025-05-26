@@ -18,6 +18,7 @@ const SectionForm = ({ postId, refetch }) => {
   } = useForm();
 
   const onSubmit = async (data) => {
+    console.log(data)
     const formData = new FormData();
     formData.append("content", data.content);
     formData.append("position", data.position || "1");
@@ -77,21 +78,23 @@ const SectionForm = ({ postId, refetch }) => {
             errors={errors}
           />
 
-          <div className="mt-4 flex gap-2">
-            <button
-              type="submit"
-              className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              Guardar sección
-            </button>
-            <button
-              type="button"
-              onClick={resetForm}
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-            >
-              Cancelar
-            </button>
-          </div>
+          {sectionType.sectionTypeName != "RRSS" && (
+            <div className="mt-4 flex gap-2">
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+              >
+                Guardar sección
+              </button>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
+              >
+                Cancelar
+              </button>
+            </div>
+          )}
         </form>
       )}
     </div>

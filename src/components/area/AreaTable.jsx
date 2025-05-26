@@ -43,7 +43,6 @@ const AreaTable = () => {
   }, [loading, error]);
 
   const handleEdit = (area) => {
-    console.log("Edit Area:", area);
     setSelectedArea(area);
     setIsCreateModalOpen(true);
   };

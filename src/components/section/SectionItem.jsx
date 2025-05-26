@@ -6,6 +6,8 @@ import TipTapEditor from "../TipTapEditor";
 import Input from "../Input";
 import { Pencil, Save, Trash, Trash2, X } from "lucide-react";
 import FileDropzone from "../ui/FileDropzone";
+import '@justinribeiro/lite-youtube';
+
 
 const SectionItem = ({ section, fetchData, onStartDelete }) => {
   const { register, reset, setValue, getValues, errors } = useForm();
@@ -106,6 +108,14 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
     );
   };
 
+  const extractYouTubeVideoId = (url) => {
+    const match = url.match(
+      /(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+    console.log(match[1])
+    return match ? match[1] : "";
+  };
+
   const renderContent = () => {
     switch (section.sectionTypeName) {
       case "Título":
@@ -129,6 +139,13 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
             className="max-w-full rounded"
           />
         );
+      case "Video":
+        return (
+          <lite-youtube
+            videoid={extractYouTubeVideoId(section.content)}
+            className="w-full max-w-2xl rounded-lg shadow"
+          ></lite-youtube>
+        );
       default:
         return null;
     }
@@ -136,7 +153,7 @@ const SectionItem = ({ section, fetchData, onStartDelete }) => {
 
   return (
     <div className="p-2 mt-4 bg-white rounded flex justify-between items-start hover:bg-gray-100 space-x-3">
-      <div className="flex-1 space-y-2">
+      <div className="flex-1 space-y-2 align-content-center">
         {isEditing ? renderEditMode() : renderContent()}
       </div>
       <div className="flex gap-2 mt-1">

@@ -12,6 +12,7 @@ const Input = ({
   as = "input",
   rows = 6,
   maxLength = 500,
+  className = "",
   ...rest
 }) => {
   const currentValue = watch(name) || "";
@@ -26,7 +27,7 @@ const Input = ({
   `;
 
   return (
-    <div>
+    <div className={`${className}`}>
       {label && (
         <label
           htmlFor={name}

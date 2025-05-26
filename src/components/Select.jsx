@@ -1,5 +1,5 @@
 import { ChevronDown } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const Select = ({
   options,
@@ -10,11 +10,21 @@ const Select = ({
   register,
   required,
   errors,
+  onChange: externalOnChange,
+  className,
 }) => {
   const [selected, setSelected] = useState([0]);
 
+  const handleChange = (e) => {
+    const selectedItem = options.find((p) => String(p.id) === e.target.value);
+    setSelected(selectedItem);
+    if (externalOnChange) {
+      externalOnChange(e, selectedItem);
+    }
+  };
+
   return (
-    <div>
+    <div className={`w-full ${className}`}>
       <label htmlFor={name} className="block text-sm font-medium text-gray-900">
         {label || placeholder}
       </label>
@@ -28,15 +38,14 @@ const Select = ({
     ${errors?.[name] ? "outline-red-500" : ""}
   `}
           defaultValue="0"
-          {...register(name, {
-            required: required && "Este campo es obligatorio",
-            validate: (value) =>
-              value !== "0" || "Selecciona una opción válida",
-          })}
-          onChange={(e) => {
-            const selectedItem = options.find((p) => p.id === e.target.value);
-            setSelected(selectedItem);
-          }}
+          {...(typeof register === "function"
+            ? register(name, {
+                required: required && "Este campo es obligatorio",
+                validate: (value) =>
+                  value !== "0" || "Selecciona una opción válida",
+              })
+            : {})}
+          onChange={handleChange}
         >
           <option value="0" disabled hidden>
             -- {placeholder || `Selecciona el ${name}`} --

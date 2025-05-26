@@ -1,51 +1,71 @@
-import { PaperclipIcon, Facebook, Instagram, Twitter, Link2 } from "lucide-react";
+import {
+  PaperclipIcon,
+  Facebook,
+  Instagram,
+  Twitter,
+  Link2,
+} from "lucide-react";
 import { useParams } from "react-router";
 import { useFetch } from "../../hooks/useFetch ";
 import SectionManager from "../section/SectionManager";
+import { API_URLS, API_URLS_SEARCH } from "../../constants/urls";
+import SocialIcon from "../common/SocialIcon";
+import { useEffect } from "react";
+
+const getIconClassName = (name) => {
+  switch (name) {
+    case "Facebook":
+      return "h-5 w-5 text-[#1877F2]";
+    case "Instagram":
+      return "h-5 w-5 text-[#E4405F]";
+    case "Twitter":
+      return "h-5 w-5 text-[#1DA1F2]";
+    default:
+      return "h-5 w-5 text-gray-500";
+  }
+};
 
 const PostView = () => {
   const { id } = useParams();
-  const { data: postData, loading, error } = useFetch(`http://localhost:8081/posts/${id}`);
+  const {
+    data: postData,
+    loading,
+    error,
+  } = useFetch(`${API_URLS.POSTS}/${id}`);
+  const { data: socialData } = useFetch(
+    `${API_URLS_SEARCH.POST_SOCIAL_NETWORKS}${id}`
+  );
 
-  const getSocialLinks = () => {
-    const savedLinks = localStorage.getItem(`socialLinks-${id}`);
-    return savedLinks ? JSON.parse(savedLinks) : [];
-  };
+  useEffect(() => {
+    console.log("Social Data:", socialData);
+  }, [socialData]);
 
-  const getSocialIcon = (platform) => {
-    switch (platform) {
-      case 'Facebook':
-        return <Facebook className="h-5 w-5 text-[#1877F2]" />;
-      case 'Instagram':
-        return <Instagram className="h-5 w-5 text-[#E4405F]" />;
-      case 'Twitter':
-        return <Twitter className="h-5 w-5 text-[#1DA1F2]" />;
-      default:
-        return <Link2 className="h-5 w-5 text-gray-500" />;
-    }
-  };
+  if (loading)
+    return <div className="p-4 text-gray-600">Cargando publicación...</div>;
+  if (error)
+    return <div className="p-4 text-red-600">Error: {error.message}</div>;
 
   const infoItems = [
     {
       label: "Autor",
-      value: postData ? `${postData.authorName} ${postData.authorLastName}` : "Cargando...",
+      value:
+        `${postData?.authorName || ""} ${
+          postData?.authorLastName || ""
+        }`.trim() || "Cargando...",
     },
-    { 
-      label: "Fecha de publicación", 
-      value: postData?.postDate || "Fecha no disponible" 
+    {
+      label: "Fecha de publicación",
+      value: postData?.postDate || "Fecha no disponible",
     },
-    { 
-      label: "Tipo de publicación", 
-      value: postData?.postTypeName || "Tipo no especificado" 
+    {
+      label: "Tipo de publicación",
+      value: postData?.postTypeName || "Tipo no especificado",
     },
-    { 
-      label: "Área", 
-      value: postData?.areaName || "Área no definida" 
+    {
+      label: "Área",
+      value: postData?.areaName || "Área no definida",
     },
   ];
-
-  if (loading) return <div className="p-4 text-gray-600">Cargando post...</div>;
-  if (error) return <div className="p-4 text-red-600">Error: {error.message}</div>;
 
   return (
     <div className="px-6 py-4">
@@ -63,9 +83,7 @@ const PostView = () => {
         <h1 className="text-3xl font-semibold text-gray-800">
           {postData?.title || "Título del post"}
         </h1>
-        <p className="mt-1 text-sm/6 text-gray-500">
-          {postData?.summary}
-        </p>
+        <p className="mt-1 text-sm/6 text-gray-500">{postData?.summary}</p>
       </div>
 
       <div className="mt-6 border-t border-gray-100">
@@ -83,34 +101,43 @@ const PostView = () => {
           ))}
 
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm/6 font-medium text-gray-900">Redes Sociales</dt>
+            <dt className="text-sm/6 font-medium text-gray-900">
+              Redes Sociales
+            </dt>
             <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <div className="space-y-2">
-                {getSocialLinks().map((social, index) => (
-                  <div 
+                {socialData?.map((social, index) => (
+                  <div
                     key={index}
-                    className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    {getSocialIcon(social.platform)}
+                    <SocialIcon
+                      name={social.socialNetworkIcon}
+                      className={getIconClassName(social.socialNetworkIcon)}
+                    />
                     <a
-                      href={social.url}
+                      href={social.link}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-600 hover:underline"
                     >
-                      {social.url}
+                      {social.link}
                     </a>
                   </div>
                 ))}
-                {getSocialLinks().length === 0 && (
-                  <div className="text-gray-500">No hay redes sociales agregadas</div>
+                {socialData?.length === 0 && (
+                  <div className="text-gray-500">
+                    No hay redes sociales agregadas
+                  </div>
                 )}
               </div>
             </dd>
           </div>
 
           <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-            <dt className="text-sm/6 font-medium text-gray-900">Archivos Adjuntos</dt>
+            <dt className="text-sm/6 font-medium text-gray-900">
+              Archivos Adjuntos
+            </dt>
             <dd className="mt-2 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <div className="flex w-0 flex-1 items-center">
                 <PaperclipIcon className="size-5 shrink-0 text-gray-400" />
@@ -125,8 +152,6 @@ const PostView = () => {
               </div>
             </dd>
           </div>
-
-          
 
           <SectionManager postId={id} />
         </dl>
