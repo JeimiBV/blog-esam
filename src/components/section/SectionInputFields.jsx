@@ -3,6 +3,7 @@ import ImageSectionFields from "./SectionFields/ImageSectionFields";
 import SocialSectionFields from "./SectionFields/SocialSectionFields";
 import TextSectionFields from "./SectionFields/TextSectionFields";
 import VideoSectionFields from "./SectionFields/VideoSectionFields";
+import GallerySectionFields from "./SectionFields/GallerySectionFields"; 
 
 const SectionInputFields = ({ type, register, setValue, errors  }) => {
 
@@ -17,6 +18,9 @@ const SectionInputFields = ({ type, register, setValue, errors  }) => {
       return <VideoSectionFields register={register} setValue={setValue} errors={errors} />;
     case "rrss":
       return <SocialSectionFields register={register} setValue={setValue} errors={errors} />;
+      case "galeria": 
+  return <GallerySectionFields setValue={setValue} errors={errors} />;
+
     default:
       return <DefaultSectionFields sectionTypeName={sectionTypeName} register={register} setValue={setValue} errors={errors} />;
   }
